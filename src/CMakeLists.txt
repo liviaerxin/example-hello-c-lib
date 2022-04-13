@@ -1,9 +1,8 @@
 if(APPLE)
   # Default is @rpath, if you want to change apply these
   # set(CMAKE_INSTALL_NAME_DIR "@loader_path")
-  # set(CMAKE_BUILD_WITH_INSTALL_NAME_DIR TRUE)
 
-  # To search other shared libraries that it's linking in the same folder
+  # To search other shared libraries in the same folder
   set(CMAKE_INSTALL_RPATH "@loader_path")
 endif(APPLE)
 
@@ -20,3 +19,5 @@ source_group(
   TREE "${PROJECT_SOURCE_DIR}/include"
   PREFIX "Header Files"
   FILES ${HEADER_LIST})
+
+install(TARGETS hello DESTINATION ${INSTALL_DIR})

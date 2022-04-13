@@ -23,23 +23,36 @@ endif()
 # RPATH setting for dynamic library
 set(CMAKE_SKIP_RPATH FALSE)
 
+# Install a custom folder, not in system dir, like `/usr/local/`
+set(INSTALL_DIR "${PROJECT_SOURCE_DIR}/bin")
+message(STATUS "INSTALL_DIR ${INSTALL_DIR}")
+message(STATUS "CMAKE_INSTALL_DIRS: ${CMAKE_INSTALL_PREFIX}/lib")
+
 if(APPLE)
   message(STATUS "Setting MacOSX RPath")
-  message(STATUS "INSTALL_DIRS: ${CMAKE_INSTALL_PREFIX}/lib")
   # enable/disable `@rpath` in the install name for any shared library being built on macOS
   # note: default is TRUE, which result built dylib with install name like `@rpath/libtest_library.dylib`
+  # otherwise, the install name would be an absolute path
   set(CMAKE_MACOSX_RPATH TRUE)
 
-  # note: you should avoid change install name for any shared library being built on macOS
-  # For recomendation, change `CMAKE_INSTALL_RPATH`
+  # set `INSTALL_NAME_DIR`
+  # note: you should avoid to change INSTALL_NAME_DIR for any shared library being built on macOS
+  # For recommendation, change `CMAKE_INSTALL_RPATH` instead of `CMAKE_INSTALL_NAME_DIR`
   # set(CMAKE_INSTALL_NAME_DIR "")
+  # set(CMAKE_INSTALL_NAME_DIR "@loader_path")
+  # note: keep build's lib install name up date to install's lib
   # set(CMAKE_BUILD_WITH_INSTALL_NAME_DIR TRUE)
 
-  # Recommendations here for providing a fully relocatable executable/package by using `@executable_path` or `loader_path`
+  # set `INSTALL_RPATH`
+  # For recommendations, provide a fully relocatable executable/package by using `@executable_path` or `loader_path`
   set(CMAKE_INSTALL_RPATH "")
   # set(CMAKE_BUILD_RPATH "@executable_path")
-  # keep build and install the same setting, otherwise the default `BUILD_RPATH` will set to an abosulate path to the shared library
-  set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+  # DON'T keep build and install the same setting, the building and installing dir layout of executable and libs are different.
+  # By default, `BUILD_RPATH` will set to an abosulate path to the shared library
+
+  # add the automatically determined parts of the RPATH
+  # which point to directories outside the build tree to the install RPATH
+  set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 endif(APPLE)
 
 # The compiled library code is here
